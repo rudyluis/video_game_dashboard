@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Inicio de sesión{% endblock %}
+{% block content %}
+<h2>Iniciar Sesión o Registrarse</h2>
+
+<form method="POST" action="{{ url_for('login') }}" class="mb-3">
+  <input type="text" name="username" placeholder="Usuario" class="form-control mb-2" required>
+  <input type="password" name="password" placeholder="Contraseña" class="form-control mb-2" required>
+  <button class="btn btn-primary" type="submit">Iniciar Sesión</button>
+</form>
+
+<form method="POST" action="{{ url_for('register') }}">
+  <input type="text" name="username" placeholder="Nuevo usuario" class="form-control mb-2" required>
+  <input type="password" name="password" placeholder="Nueva contraseña" class="form-control mb-2" required>
+  <button class="btn btn-secondary" type="submit">Registrarse</button>
+</form>
+{% endblock %}
