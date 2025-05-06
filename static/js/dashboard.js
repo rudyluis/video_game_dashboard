@@ -1,4 +1,4 @@
-const csvUrl = "https://raw.githubusercontent.com/rudyluis/DashboardJS/refs/heads/main/video_games_sales.csv";
+//const csvUrl = "https://raw.githubusercontent.com/rudyluis/DashboardJS/refs/heads/main/video_games_sales.csv";
 let allData = [];
 let filteredData = [];
 
@@ -29,7 +29,7 @@ $(document).ready(function () {
             }
         });
 
-    $.ajax({
+    /*$.ajax({
         url: csvUrl,
         dataType: 'text',
         success: function (data) {
@@ -41,9 +41,29 @@ $(document).ready(function () {
             actualizarStatsCards();
             aplicarFiltrosYGraficos();
         }
+    });*/
+    $.ajax({
+        url: "/api/video_games",
+        method: "GET",
+        dataType: "json",
+        success: function (data) {
+            console.log("Datos recibidos:", data);
+           
+            allData = data;
+            filteredData = allData;
+            console.log(allData);
+            popularFiltros();
+            actualizarStatsCards();
+            aplicarFiltrosYGraficos();
+
+        },
+        error: function (xhr, status, error) {
+            console.error("Error al cargar los datos:", error);
+        }
     });
 
     $('#filterPlataforma, #filterGenero, #filterAnio, #filterEditor').on('change', function () {
+        //popularFiltros()
         aplicarFiltrosYGraficos();
     });
 
@@ -57,7 +77,7 @@ $(document).ready(function () {
         renderGraficos(filteredData);
     });
 });
-
+/*
 function popularFiltros() {
     const plataformaSel = $('#filterPlataforma').val() || [];
     const generoSel = $('#filterGenero').val() || [];
@@ -99,6 +119,42 @@ function popularFiltros() {
     ) : allData, 'Publisher'), editorSel);
 }
 
+*/
+function popularFiltros() {
+    const params = {
+        plataforma: $('#filterPlataforma').val() || [],
+        genero: $('#filterGenero').val() || [],
+        anio: $('#filterAnio').val() || [],
+        editor: $('#filterEditor').val() || []
+    };
+
+    $.ajax({
+        url: '/api/filtros',
+        method: 'GET',
+        data: params,
+        traditional: true,  // importante para enviar listas en query string
+        success: function (res) {
+            actualizarCombo('#filterPlataforma', res.plataformas, params.plataforma);
+            actualizarCombo('#filterGenero', res.generos, params.genero);
+            actualizarCombo('#filterAnio', res.anios, params.anio);
+            actualizarCombo('#filterEditor', res.editores, params.editor);
+        },
+        error: function (err) {
+            console.error("Error al cargar filtros:", err);
+        }
+    });
+}
+
+function actualizarCombo(id, valores, valoresActuales) {
+    const select = $(id);
+    select.empty();
+    valores.forEach(v => select.append(`<option value="${v}">${v}</option>`));
+    select.val(valoresActuales);
+    select.trigger('change.select2'); // si usas select2
+}
+
+
+
 function actualizarStatsCards() {
     const totalSales = filteredData.reduce((sum, d) => sum + parseFloat(d.Global_Sales || 0), 0);
     const platformSales = {};
@@ -138,6 +194,7 @@ function aplicarFiltrosYGraficos() {
         (!search || d.Name.toLowerCase().includes(search))
     );
 
+    
     cargarTabla(filteredData);
     actualizarStatsCards();
     renderGraficos(filteredData);
