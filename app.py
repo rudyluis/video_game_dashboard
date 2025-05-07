@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from sqlalchemy.orm import sessionmaker
-from models.base import  engine
+from models.base import engine
 from models.model import Usuario, VideoGameSale
 from werkzeug.security import generate_password_hash, check_password_hash
 import os

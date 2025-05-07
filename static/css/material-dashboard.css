@@ -8,7 +8,7 @@
   --bs-blue: #63B3ED;
   --bs-indigo: #596CFF;
   --bs-purple: #6f42c1;
-  --bs-pink: #d63384;
+  --bs-pink: #3351d6;
   --bs-red: #F56565;
   --bs-orange: #fd7e14;
   --bs-yellow: #FBD38D;
@@ -1782,7 +1782,7 @@ progress {
   margin-bottom: 0.5rem;
   font-size: 0.875rem;
   font-weight: 400;
-  color: #7b809a; }
+  color: #f1f1f1; }
 
 .col-form-label {
   padding-top: calc(0.5rem + 1px);
@@ -13861,7 +13861,7 @@ label,
   font-size: 0.875rem;
   font-weight: 400;
   margin-bottom: 0.5rem;
-  color: #7b809a;
+  color: #fffdfd;;
   margin-left: 0.25rem; }
 
 .input-group .form-label {
