@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 # Configura tu conexión
 DATABASE_URL = "postgresql://postgres:123456@localhost:5432/video_games"  # ← cámbialo
-
+DATABASE_URL = "postgresql://dbgame_sfhn_user:5UEkhDNGJaMQfAa5sNfHlZbPrFkoGCGF@dpg-d0llaopr0fns738g24og-a.oregon-postgres.render.com/dbgame_sfhn"
 # Crear engine y sesión
 engine = create_engine(DATABASE_URL)
 Session = sessionmaker(bind=engine)
