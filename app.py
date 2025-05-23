@@ -139,6 +139,101 @@ def obtener_filtros():
 def listgames():
     return render_template('crud/lista.html')
 
+
+
+@app.route('/api/list_video_games')
+def api_list_video_games():
+    data = db_session.query(VideoGameSale).all()
+    
+    juegos = []
+    for juego in data:
+        
+        juegos.append({
+            "id": juego.id,
+            "Name": juego.name,
+            "Platform": juego.platform,
+            "Year": juego.year,
+            "Genre": juego.genre,
+            "Publisher": juego.publisher,
+            "NA_Sales": juego.na_sales,
+            "EU_Sales": juego.eu_sales,
+            "JP_Sales": juego.jp_sales,
+            "Other_Sales": juego.other_sales,
+            "Global_Sales": juego.global_sales
+        })
+
+    return jsonify(juegos)
+
+##para los combos de filtros
+@app.route('/api/opciones', methods=['GET'])
+def obtener_opciones():
+    plataformas = db_session.query(VideoGameSale.platform).distinct().all()
+    generos = db_session.query(VideoGameSale.genre).distinct().all()
+    editores = db_session.query(VideoGameSale.publisher).distinct().all()
+    anios = db_session.query(VideoGameSale.year).distinct().all()
+
+    return jsonify({
+        "plataformas": sorted([p[0] for p in plataformas if p[0]]),
+        "generos": sorted([g[0] for g in generos if g[0]]),
+        "editores": sorted([e[0] for e in editores if e[0]]),
+        "anios": sorted([a[0] for a in anios if a[0]])
+    })
+
+@app.route('/add/video_games', methods=['POST'])
+def crear_videojuego():
+    data = request.json
+    nuevo = VideoGameSale(
+        rank=int(data.get('rank')),
+        name=data.get('name'),
+        platform=data.get('platform'),
+        year=int(data.get('year')) if data.get('year') else None,
+        genre=data.get('genre'),
+        publisher=data.get('publisher'),
+        na_sales=float(data.get('na_sales')),
+        eu_sales=float(data.get('eu_sales')),
+        jp_sales=float(data.get('jp_sales')),
+        other_sales=float(data.get('other_sales')),
+        global_sales=float(data.get('global_sales'))
+    )
+    db_session.add(nuevo)
+    db_session.commit()
+    return jsonify({"mensaje": "Videojuego agregado correctamente"})
+
+
+@app.route('/del/video_games/<int:id>', methods=['DELETE'])
+def eliminar_videojuego(id):
+    videojuego = db_session.query(VideoGameSale).get(id)
+    if videojuego:
+        db_session.delete(videojuego)
+        db_session.commit()
+        return jsonify({"mensaje": "Eliminado correctamente"})
+    return jsonify({"error": "Videojuego no encontrado"}), 404
+
+
+@app.route('/upd/video_games/<int:id>', methods=['PUT'])
+def actualizar_videojuego(id):
+    data = request.json
+    juego = db_session.query(VideoGameSale).get(id)
+    if not juego:
+        return jsonify({"error": "No encontrado"}), 404
+
+    juego.rank = int(data.get("rank"))
+    juego.name = data.get("name")
+    juego.platform = data.get("platform")
+    juego.year = int(data.get("year")) if data.get("year") else None
+    juego.genre = data.get("genre")
+    juego.publisher = data.get("publisher")
+    juego.na_sales = float(data.get("na_sales"))
+    juego.eu_sales = float(data.get("eu_sales"))
+    juego.jp_sales = float(data.get("jp_sales"))
+    juego.other_sales = float(data.get("other_sales"))
+    juego.global_sales = float(data.get("global_sales"))
+
+    db_session.commit()
+    return jsonify({"mensaje": "Actualizado correctamente"})
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
     ##port = int(os.environ.get("PORT", 5000))  # Render asigna el puerto dinámicamente
