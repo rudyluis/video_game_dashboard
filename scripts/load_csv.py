@@ -21,6 +21,7 @@ Base.metadata.create_all(engine)
 
 # Leer el CSV con pandas
 CSV_URL = "https://raw.githubusercontent.com/rudyluis/DashboardJS/refs/heads/main/video_games_sales.csv"
+
 df = pd.read_csv(CSV_URL)
 
 # Limpieza / transformación si es necesario
@@ -40,7 +41,7 @@ records = [
         jp_sales=row['JP_Sales'],
         other_sales=row['Other_Sales'],
         global_sales=row['Global_Sales']
-    )
+    )s
     for index, row in df.iterrows()
 ]
 
